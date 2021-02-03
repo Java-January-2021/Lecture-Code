@@ -68,5 +68,8 @@ public class GoldController {
 		session.setAttribute("gold", totalGold);
 		session.setAttribute("activity", activity);
 		return "redirect:/";
+		
+		// act.contains("ouch!")? "red" : "green"
+
 	}
 }
