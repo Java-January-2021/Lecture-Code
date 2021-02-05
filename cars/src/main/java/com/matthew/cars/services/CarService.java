@@ -37,5 +37,11 @@ public class CarService {
 		this.cRepo.deleteById(id);
 	}
 	
+	public Car createCar(String make, String model, int year, String color) {
+		Car newCar = new Car(make, model, year, color);
+		return this.cRepo.save(newCar);
+	}
+	
+	
 	// Update A Car
 }
