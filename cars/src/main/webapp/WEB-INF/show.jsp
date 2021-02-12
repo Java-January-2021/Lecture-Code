@@ -17,7 +17,14 @@
 <hr>
 <p>Year: ${car.year}</p>
 <p>Color: ${car.color}</p>
-
+<hr>
+<h3>Accessories</h3>
+<ol>
+<c:forEach items="${car.accessories }" var="acc">
+	<li><p>${acc.name} ${acc.description } ${acc.price}</p></li>
+</c:forEach>
+</ol>
+<hr>
 <c:choose>
 <c:when test="${car.registration != null }">
 <h4>Registration</h4>
@@ -47,8 +54,34 @@
 
 <hr>
 <h3>Edit This Car</h3>
+<form:form method="POST" action="/edit/${car.id}" modelAttribute="car">
+<p>
+	<form:label path="make">Make:
+	<form:errors path="make"/>
+	<form:input path="make"/></form:label>
+	</p>
+	
+	<p>
+	<form:label path="model">Model:
+	<form:errors path="model"/>
+	<form:input path="model"/></form:label>
+	</p>
+	<p>
+	<form:label path="year">Year
+	<form:errors path="year"/>
+	<form:input path="year"/></form:label>
+	</p>
+		<p>
+	<form:label path="color">Color
+	<form:errors path="color"/>
+	<form:input path="color"/></form:label>
+	</p>
+<button>Update Car</button>
+</form:form>
 
-<form method="POST" action="/edit/${car.id}">
+<hr>
+<h3>Old Way</h3>
+<form method="POST" action="/old/edit/${car.id}">
 <input type="hidden" name="_method" value="put">
 <p>
 <label for="make">Make</label>

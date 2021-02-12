@@ -10,6 +10,8 @@
 </head>
 <body>
 <div class="container">
+<h1>Welcome to Cars dot Com</h1>
+<p><a href="/new">Create Car</a> | <a href="/accessory/new">Create Accessory</a>
 <table class="table table-dark">
 <thead>
 <tr>

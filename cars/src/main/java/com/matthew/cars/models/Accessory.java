@@ -6,24 +6,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="registration")
-public class Registration {
+@Table(name="accessories")
+public class Accessory {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private String city;
-	private String state;
+	private String name;
+	private Double price;
+	private String description; // MySql DESC = Descending
 	
-	@OneToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="car_id")
 	private Car car;
 	
-	public Registration() {
-
+	public Accessory() {
 	}
 	public Long getId() {
 		return id;
@@ -31,17 +31,23 @@ public class Registration {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCity() {
-		return city;
+	public String getName() {
+		return name;
 	}
-	public void setCity(String city) {
-		this.city = city;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getState() {
-		return state;
+	public Double getPrice() {
+		return price;
 	}
-	public void setState(String state) {
-		this.state = state;
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public Car getCar() {
 		return car;
@@ -49,7 +55,6 @@ public class Registration {
 	public void setCar(Car car) {
 		this.car = car;
 	}
-	
 	
 	
 }

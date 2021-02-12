@@ -44,9 +44,10 @@ public class HomeController {
 	}
 	
 	@GetMapping("/{id}")
-	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Registration registration) {
+	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Registration registration, @ModelAttribute("car") Car car) {
 		viewModel.addAttribute("car", this.cService.getSingleCar(id));
 		return "show.jsp";
+
 	}
 	
 	@PostMapping("/addRegistration")
@@ -61,8 +62,19 @@ public class HomeController {
 		}
 	}
 	
-	@PutMapping("/edit/{id}")
-	public String updateCar(@PathVariable("id") Long id, @RequestParam("make") String make, @RequestParam("model") String model, @RequestParam("year") int year, @RequestParam("color") String color) {
+	@PostMapping("/edit/{id}")
+	public String updateCar(@Valid @ModelAttribute("car") Car updatedCar, BindingResult result, @PathVariable("id") Long id, @ModelAttribute("tag") Registration registration, Model viewModel) {
+		if(result.hasErrors()) {
+			viewModel.addAttribute("car", this.cService.getSingleCar(id));
+			return "show.jsp";
+		}
+		this.cService.updateCar(updatedCar);
+		return "redirect:/" + id;
+	}
+	
+	// Way that Doesn't Use Validations
+	@PutMapping("/old/edit/{id}")
+	public String oldUpdateCar(@PathVariable("id") Long id, @RequestParam("make") String make, @RequestParam("model") String model, @RequestParam("year") int year, @RequestParam("color") String color) {
 		Car carToUpdate = this.cService.getSingleCar(id);
 		carToUpdate.setMake(make);
 		carToUpdate.setModel(model);
@@ -83,6 +95,8 @@ public class HomeController {
 		
 		
 	}
+	
+
 	
 	//Old Way
 	@PostMapping("/oldaddCar")

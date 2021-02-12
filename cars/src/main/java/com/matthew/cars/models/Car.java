@@ -3,6 +3,7 @@ package com.matthew.cars.models;
 
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -33,8 +35,13 @@ public class Car {
 	private int year;
 	@NotBlank
 	private String color;
+	
 	@OneToOne(mappedBy="car", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private Registration registration;
+	
+	@OneToMany(mappedBy="car", cascade=CascadeType.ALL, fetch=FetchType.LAZY )
+	private List<Accessory> accessories;
+	
 	@Column(updatable=false)
 	@DateTimeFormat(pattern = "yyy-MM-DD HH:mm:ss")
 	private Date createdAt;
@@ -125,6 +132,14 @@ public class Car {
 
 	public void setRegistration(Registration registration) {
 		this.registration = registration;
+	}
+
+	public List<Accessory> getAccessories() {
+		return accessories;
+	}
+
+	public void setAccessories(List<Accessory> accessories) {
+		this.accessories = accessories;
 	}
 	
 	
