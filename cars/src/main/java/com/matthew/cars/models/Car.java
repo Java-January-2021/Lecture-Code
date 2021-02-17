@@ -12,6 +12,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -36,11 +39,27 @@ public class Car {
 	@NotBlank
 	private String color;
 	
+	// Singular Object
 	@OneToOne(mappedBy="car", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private Registration registration;
 	
+	// Multiple Objects require Array List
 	@OneToMany(mappedBy="car", cascade=CascadeType.ALL, fetch=FetchType.LAZY )
 	private List<Accessory> accessories;
+	
+	// Many To Many Table
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name="likes",
+			joinColumns = @JoinColumn(name="car_id"),
+			inverseJoinColumns = @JoinColumn(name="user_id")
+			)
+	private List<User> likers;
+	
+	// Many to Many as Entity
+	@OneToMany(mappedBy="car", fetch=FetchType.LAZY)
+	private List<Rating> ratings;
+	
 	
 	@Column(updatable=false)
 	@DateTimeFormat(pattern = "yyy-MM-DD HH:mm:ss")
@@ -140,6 +159,22 @@ public class Car {
 
 	public void setAccessories(List<Accessory> accessories) {
 		this.accessories = accessories;
+	}
+
+	public List<User> getLikers() {
+		return likers;
+	}
+
+	public void setLikers(List<User> likers) {
+		this.likers = likers;
+	}
+
+	public List<Rating> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(List<Rating> ratings) {
+		this.ratings = ratings;
 	}
 	
 	

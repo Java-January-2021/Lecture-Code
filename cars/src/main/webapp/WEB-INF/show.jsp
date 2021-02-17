@@ -14,6 +14,37 @@
 <body>
 <div class="container">
 <h2>Details For ${car.model } ${car.make}</h2>
+
+<c:choose>
+<c:when test="${car.ratings.contains(user)}">
+Thanks For Rating!
+</c:when>
+<c:otherwise>
+<h4>Add A Rating</h4>
+<form method="POST" action="/rate/${car.id}">
+<select name="rating">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+</select>
+<button>Rate!</button>
+</form>
+</c:otherwise>
+</c:choose>
+
+<hr>
+<h3>Liked By:</h3>
+<ol>
+<c:forEach items="${car.likers}" var="user">
+<li>${user.firstName } ${user.lastName}</li>
+</c:forEach>
+</ol>
 <hr>
 <p>Year: ${car.year}</p>
 <p>Color: ${car.color}</p>

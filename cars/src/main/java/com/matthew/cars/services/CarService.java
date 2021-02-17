@@ -2,9 +2,11 @@ package com.matthew.cars.services;
 
 import java.util.List;
 
+
 import org.springframework.stereotype.Service;
 
 import com.matthew.cars.models.Car;
+import com.matthew.cars.models.User;
 import com.matthew.cars.repositories.CarRepository;
 
 @Service
@@ -48,5 +50,23 @@ public class CarService {
 	}
 	
 	
-	// Update A Car
+	// Add Liker To Database
+	public void addLiker(User user, Car car) {
+		// Get the List from the car object
+		List<User> likers = car.getLikers();
+		// Add The Liker to the ArrayList
+		likers.add(user);
+		// Update The Database
+		this.cRepo.save(car);
+	}
+	
+	// Remove Liker From Database
+	public void removeLiker(User user, Car car) {
+		// Get the List from the car object
+		List<User> likers = car.getLikers();
+		// Add The Liker to the ArrayList
+		likers.remove(user);
+		// Update The Database
+		this.cRepo.save(car);
+	}
 }

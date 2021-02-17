@@ -1,7 +1,9 @@
 package com.matthew.cars.controllers;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.matthew.cars.models.Car;
+import com.matthew.cars.models.Rating;
 import com.matthew.cars.models.Registration;
+import com.matthew.cars.models.User;
 import com.matthew.cars.services.CarService;
+import com.matthew.cars.services.RatingService;
 import com.matthew.cars.services.RegistrationService;
+import com.matthew.cars.services.UserService;
 
 @Controller
 public class HomeController {
@@ -27,14 +33,78 @@ public class HomeController {
 	private CarService cService;
 	@Autowired 
 	private RegistrationService rService;
+	@Autowired
+	private UserService uService;
+	@Autowired
+	private RatingService ratingService;
 	
 	
 	// @RequestMapping(value="/", method=RequestMethod.POST)
 	// @RequestMapping(value="/", method=RequestMethod.GET)
 	// @RequestMapping("/");
+	
 	@GetMapping("/")
 	public String index(Model viewModel) {
+		List<User> users = this.uService.getAllUsers();
+		viewModel.addAttribute("users", users);
+		return "landing.jsp";
+	}
+	
+	@PostMapping("/login")
+	public String login(HttpSession session, @RequestParam("user") Long id) {
+		if(session.getAttribute("user_id")== null) {
+			session.setAttribute("user_id", id);
+		}
+		return "redirect:/cars";
+	}
+	
+	@GetMapping("/like/{id}")
+	public String like(@PathVariable("id") Long id, HttpSession session) {
+		Long userId = (Long)session.getAttribute("user_id");
+		Long carId = id;
+		// User Object from Database
+		User liker = this.uService.find(userId);
+		Car likedCar = this.cService.getSingleCar(carId);
+		// Tell the service to insert into database
+		this.cService.addLiker(liker, likedCar);
+		return "redirect:/cars";
+	}
+	
+	@GetMapping("/unlike/{id}")
+	public String unlike(@PathVariable("id") Long id, HttpSession session) {
+		Long userId = (Long)session.getAttribute("user_id");
+		Long carId = id;
+		// User Object from Database
+		User unliker = this.uService.find(userId);
+		Car unlikedCar = this.cService.getSingleCar(carId);
+		// Tell the service to insert into database
+		this.cService.removeLiker(unliker, unlikedCar);
+		return "redirect:/cars";
+	}
+	
+	@PostMapping("/rate/{id}")
+	public String addRating(@PathVariable("id") Long id, @RequestParam("rating") Double rating, HttpSession session) {
+		Long userId = (Long)session.getAttribute("user_id");
+		User user = this.uService.find(userId);
+		Car ratedCar = this.cService.getSingleCar(id);
+		Rating newRating = new Rating();
+		newRating.setCar(ratedCar);
+		newRating.setUser(user);
+		newRating.setRating(rating);
+		this.ratingService.createRating(newRating);
+		return "redirect:/cars";
+	}
+	
+	@GetMapping("/cars")
+	public String landing(Model viewModel, HttpSession session) {
+		if(session.getAttribute("user_id")== null) {
+			return "redirect:/";
+		}
+		
+		Long userId = (Long)session.getAttribute("user_id");
+		User user = this.uService.find(userId);
 		viewModel.addAttribute("cars", this.cService.getAllCars());
+		viewModel.addAttribute("user", user);
 		return "index.jsp";
 	}
 	
@@ -44,8 +114,11 @@ public class HomeController {
 	}
 	
 	@GetMapping("/{id}")
-	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Registration registration, @ModelAttribute("car") Car car) {
+	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Registration registration, @ModelAttribute("car") Car car, HttpSession session) {
+		Long userId = (Long)session.getAttribute("user_id");
+		User user = this.uService.find(userId);
 		viewModel.addAttribute("car", this.cService.getSingleCar(id));
+		viewModel.addAttribute("user", user);
 		return "show.jsp";
 
 	}
@@ -94,6 +167,12 @@ public class HomeController {
 		}
 		
 		
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/";
 	}
 	
 
