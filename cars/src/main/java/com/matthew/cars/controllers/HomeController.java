@@ -1,7 +1,6 @@
 package com.matthew.cars.controllers;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -26,6 +25,7 @@ import com.matthew.cars.services.CarService;
 import com.matthew.cars.services.RatingService;
 import com.matthew.cars.services.RegistrationService;
 import com.matthew.cars.services.UserService;
+import com.matthew.cars.validators.UserValidator;
 
 @Controller
 public class HomeController {
@@ -37,6 +37,9 @@ public class HomeController {
 	private UserService uService;
 	@Autowired
 	private RatingService ratingService;
+	@Autowired
+	private UserValidator validator;
+
 	
 	
 	// @RequestMapping(value="/", method=RequestMethod.POST)
@@ -44,17 +47,33 @@ public class HomeController {
 	// @RequestMapping("/");
 	
 	@GetMapping("/")
-	public String index(Model viewModel) {
-		List<User> users = this.uService.getAllUsers();
-		viewModel.addAttribute("users", users);
+	public String index(@ModelAttribute("user") User user) {
+		
 		return "landing.jsp";
 	}
 	
-	@PostMapping("/login")
-	public String login(HttpSession session, @RequestParam("user") Long id) {
-		if(session.getAttribute("user_id")== null) {
-			session.setAttribute("user_id", id);
+	// Register User
+	@PostMapping("/register")
+	public String register(@Valid @ModelAttribute("user") User user, BindingResult result, HttpSession session) {
+		validator.validate(user, result);
+		if(result.hasErrors()) {
+			// if there are validation errors send them back to the front page
+			return "landing.jsp";
 		}
+		User newUser = this.uService.registerUser(user);
+		session.setAttribute("user_id", newUser.getId());
+		return "redirect:/cars";
+	}
+	
+	
+	@PostMapping("/login")
+	public String login(@RequestParam("loginEmail") String email, @RequestParam("loginPassword") String password, RedirectAttributes redirectAttrs, HttpSession session) {
+		if(!this.uService.authenticateUser(email, password)) {
+			redirectAttrs.addFlashAttribute("loginError", "Invalid Credentials");
+			return "redirect:/";
+		}
+		User user = this.uService.getByEmail(email);
+		session.setAttribute("user_id", user.getId());
 		return "redirect:/cars";
 	}
 	
@@ -114,7 +133,7 @@ public class HomeController {
 	}
 	
 	@GetMapping("/{id}")
-	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Registration registration, @ModelAttribute("car") Car car, HttpSession session) {
+	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Registration registration, HttpSession session) {
 		Long userId = (Long)session.getAttribute("user_id");
 		User user = this.uService.find(userId);
 		viewModel.addAttribute("car", this.cService.getSingleCar(id));
@@ -164,8 +183,7 @@ public class HomeController {
 		} else {
 			this.cService.createCar(car);
 			return "redirect:/";
-		}
-		
+		}	
 		
 	}
 	
@@ -194,5 +212,6 @@ public class HomeController {
 		return "redirect:/";
 	}
 	
+
 	
 }

@@ -15,11 +15,17 @@
 <div class="container">
 <h2>Details For ${car.model } ${car.make}</h2>
 
-<c:choose>
-<c:when test="${car.ratings.contains(user)}">
-Thanks For Rating!
-</c:when>
-<c:otherwise>
+
+<c:set var="found" value="false"/>
+
+<c:forEach items="${car.ratings}" var="rating">
+<c:if test="${rating.user == user}">
+<c:set var="found" value="true"/>
+You have rated this car <c:out value="${rating.rating}"/>
+</c:if>
+</c:forEach>
+
+<c:if test="${found == false}">
 <h4>Add A Rating</h4>
 <form method="POST" action="/rate/${car.id}">
 <select name="rating">
@@ -35,8 +41,9 @@ Thanks For Rating!
 </select>
 <button>Rate!</button>
 </form>
-</c:otherwise>
-</c:choose>
+</c:if>
+
+
 
 <hr>
 <h3>Liked By:</h3>
