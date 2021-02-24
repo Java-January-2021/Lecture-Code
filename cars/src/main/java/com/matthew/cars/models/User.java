@@ -2,6 +2,7 @@ package com.matthew.cars.models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,11 @@ public class User {
 	private String password;
 	@Transient
 	private String confirmPassword;
+	
+	// Associates cars created by a user
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<Car> cars;
+	
 	
 	// Many To Many Table
 	@ManyToMany(fetch=FetchType.LAZY)
@@ -99,6 +105,12 @@ public class User {
 	}
 	public void setConfirmPassword(String confirmPassword) {
 		this.confirmPassword = confirmPassword;
+	}
+	public List<Car> getCars() {
+		return cars;
+	}
+	public void setCars(List<Car> cars) {
+		this.cars = cars;
 	}
 	
 	

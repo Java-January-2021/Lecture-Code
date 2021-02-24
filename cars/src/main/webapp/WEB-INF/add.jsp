@@ -42,7 +42,7 @@
 <button>Add New Car</button>
 </form:form>
 <hr>
-<h3>Old Way</h3>
+<h3>Other Way</h3>
 <form action="/oldaddCar" method="POST">
 <div class="form-group">
 <label for="make">Make</label>

@@ -2,7 +2,7 @@
     pageEncoding="ISO-8859-1"%>
     <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-    
+    <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,9 +12,10 @@
 
 </head>
 <body>
+<t:wrapper>
 <div class="container">
 <h2>Details For ${car.model } ${car.make}</h2>
-
+<p>Owner: <a href="/user/${car.user.id}">${car.user.firstName}</a></p>
 
 <c:set var="found" value="false"/>
 
@@ -91,6 +92,7 @@ You have rated this car <c:out value="${rating.rating}"/>
 </c:choose>
 
 <hr>
+<c:if test="${car.user.id == user.id }"> 
 <h3>Edit This Car</h3>
 <form:form method="POST" action="/edit/${car.id}" modelAttribute="car">
 <p>
@@ -139,7 +141,12 @@ You have rated this car <c:out value="${rating.rating}"/>
 </p>
 
 <button>Edit This Car</button>
+<hr>
+<a href="/delete/${car.id}" class="btn btn-danger">Delete</a>
 </form>
+</c:if>
 </div>
+
+</t:wrapper>
 </body>
 </html>

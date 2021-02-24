@@ -54,7 +54,7 @@
 			    <div class="form-group">
 			        <form:label path="confirmPassword">Confirm Password</form:label>
 			        <form:errors path="confirmPassword"/>
-			       <form:input type="confirmPassword" class="form-control" path="confirmPassword"/>
+			       <form:input type="password" class="form-control" path="confirmPassword"/>
 			    </div>
 			    <input class="btn btn-danger" type="submit" value="Register!"/>
 			</form:form>

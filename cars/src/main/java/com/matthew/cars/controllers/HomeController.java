@@ -101,6 +101,12 @@ public class HomeController {
 		return "redirect:/cars";
 	}
 	
+	@GetMapping("/user/{id}")
+	public String userProfile(@PathVariable("id") Long id, Model viewModel) {
+		viewModel.addAttribute("user", this.uService.find(id));
+		return "profile.jsp";
+	}
+	
 	@PostMapping("/rate/{id}")
 	public String addRating(@PathVariable("id") Long id, @RequestParam("rating") Double rating, HttpSession session) {
 		Long userId = (Long)session.getAttribute("user_id");
@@ -142,6 +148,12 @@ public class HomeController {
 
 	}
 	
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id) {
+		this.cService.deleteCar(id);
+		return "redirect:/cars";
+	}
+	
 	@PostMapping("/addRegistration")
 	public String addRegistration(@Valid @ModelAttribute("tag") Registration registration, BindingResult result, Model viewModel) {
 		Long carID = registration.getCar().getId();
@@ -177,12 +189,15 @@ public class HomeController {
 	}
 	
 	@PostMapping("/addCar")
-	public String addCar(@Valid @ModelAttribute("car") Car car, BindingResult result) {
+	public String addCar(@Valid @ModelAttribute("car") Car car, BindingResult result, HttpSession session) {
+		Long userID = (Long)session.getAttribute("user_id");
+		User user = this.uService.find(userID);
+		car.setUser(user);
 		if(result.hasErrors()) {
 			return "add.jsp";
 		} else {
 			this.cService.createCar(car);
-			return "redirect:/";
+			return "redirect:/cars";
 		}	
 		
 	}

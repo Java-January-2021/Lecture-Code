@@ -21,6 +21,7 @@
 <td>Model</td>
 <td>Year</td>
 <td>Color</td>
+<td>Average Rating</td>
 <td># of Likes</td>
 </tr>
 </thead>
@@ -42,6 +43,18 @@
 <td>${car.model}</td>
 <td>${car.year}</td>
 <td>${car.color}</td>
+<td>
+<c:set var="avg" value="${0}"/>
+<c:forEach items="${car.ratings }" var="rating">
+<c:if test="${car.ratings.size() != 0 }">
+<c:set var="avg" value="${avg + rating.rating}"/>
+</c:if>
+</c:forEach>
+<c:if test="${avg > 0 }">
+<c:set var="avg" value="${avg / car.ratings.size()}"/>
+</c:if>
+<c:out value="${avg}"/>
+</td>
 <td>${car.likers.size()}</td>
 </tr>
 </c:forEach>

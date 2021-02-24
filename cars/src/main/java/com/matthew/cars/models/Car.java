@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -60,6 +61,10 @@ public class Car {
 	@OneToMany(mappedBy="car", fetch=FetchType.LAZY)
 	private List<Rating> ratings;
 	
+	//Car that belongs to user
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="user_id") // <- whatever the foreign key column is named in mySqL Database
+	private User user;
 	
 	@Column(updatable=false)
 	@DateTimeFormat(pattern = "yyy-MM-DD HH:mm:ss")
@@ -176,6 +181,16 @@ public class Car {
 	public void setRatings(List<Rating> ratings) {
 		this.ratings = ratings;
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
 	
 	
 	
