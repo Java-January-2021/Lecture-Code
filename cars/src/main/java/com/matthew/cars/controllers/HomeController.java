@@ -1,6 +1,7 @@
 package com.matthew.cars.controllers;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -130,6 +131,10 @@ public class HomeController {
 		User user = this.uService.find(userId);
 		viewModel.addAttribute("cars", this.cService.getAllCars());
 		viewModel.addAttribute("user", user);
+		List<Car> myCars = this.cService.findFirst();
+		for(Car c: myCars) {
+			System.out.println(c.getMake());
+		}
 		return "index.jsp";
 	}
 	

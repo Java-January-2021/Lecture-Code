@@ -49,6 +49,9 @@ public class CarService {
 		return this.cRepo.save(newCar);
 	}
 	
+	public List<Car> findFirst(){
+		return this.cRepo.findFirst5ByOrderByCreatedAtDesc();
+	}
 	
 	// Add Liker To Database
 	public void addLiker(User user, Car car) {
