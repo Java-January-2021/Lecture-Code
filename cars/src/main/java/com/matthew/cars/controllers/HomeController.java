@@ -62,7 +62,7 @@ public class HomeController {
 			return "landing.jsp";
 		}
 		User newUser = this.uService.registerUser(user);
-		session.setAttribute("user_id", newUser.getId());
+		session.setAttribute("user__id", newUser.getId());
 		return "redirect:/cars";
 	}
 	
@@ -74,7 +74,7 @@ public class HomeController {
 			return "redirect:/";
 		}
 		User user = this.uService.getByEmail(email);
-		session.setAttribute("user_id", user.getId());
+		session.setAttribute("user__id", user.getId());
 		return "redirect:/cars";
 	}
 	
